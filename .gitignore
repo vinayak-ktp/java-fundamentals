@@ -1,0 +1,9 @@
+/reference/
+sketch.txt
+*.class
+out/
+
+.claude/
+.idea/
+
+CLAUDE.md
