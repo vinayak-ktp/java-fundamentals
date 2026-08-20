@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(javac *)",
+      "Bash(java *)",
+      "Bash(cd src/06_oop/packages && *)",
+      "Bash(for d in src/*/; do javac -d out \"$d\"*.java; done)"
+    ],
+    "deny": [
+      "Read(out/**)",
+      "Edit(out/**)",
+      "Read(**/*.class)",
+      "Edit(**/*.class)"
+    ]
+  }
+}

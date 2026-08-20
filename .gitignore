@@ -3,7 +3,5 @@ sketch.txt
 *.class
 out/
 
-.claude/
+.claude/*local*
 .idea/
-
-CLAUDE.md
