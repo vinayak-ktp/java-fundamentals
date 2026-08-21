@@ -181,6 +181,44 @@ Passing behaviour as a value is what makes the following possible:
 - `new Thread(runnable)` — the task is a parameter (`13_multithreading`)
 - `Optional.map(fn)` — apply only if a value is present
 
+## Code that does not compile
+
+Counter-examples live as comments in `LambdaExpressions.java`, each with the exact `javac` error.
+The reasoning is here.
+
+```java
+@FunctionalInterface
+interface Calculator {
+    int calculate(int a, int b);
+    int other(int a);
+}
+// error: Unexpected @FunctionalInterface annotation
+//        Calculator is not a functional interface
+```
+
+This is the annotation earning its keep. Without it the interface compiles happily, and the
+failure lands instead on **every lambda that used it** — as a confusing "target type is not a
+functional interface" error at a call site nobody was editing. With it, the mistake is reported
+at the interface itself, where it was made.
+
+`default`, `static` and `private` methods do not count toward the limit, which is how `Predicate`
+offers `and`, `or` and `negate` while remaining functional. Neither do the public methods of
+`Object`.
+
+```java
+var add = (a, b) -> a + b;
+// error: cannot infer type for local variable add
+```
+
+A lambda has no type of its own. It acquires one from the **target type** — the variable,
+parameter or return type it is assigned to — and that is also where the parameter types come
+from. `var` asks the compiler to infer the variable's type from the expression, and the
+expression is asking to infer its type from the variable: there is nothing to anchor either
+side.
+
+The same reasoning rules out `Object o = () -> ...` (`Object` is not a functional interface) and
+explains why a lambda cannot be assigned to two unrelated interfaces without a cast.
+
 ## Running the examples
 
 ```sh

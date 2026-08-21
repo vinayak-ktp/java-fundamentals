@@ -23,7 +23,10 @@ public class ThrowAndThrows {
         }
     }
 
-    // FileNotFoundException is checked, so the declaration is mandatory
+    // FileNotFoundException is checked, so the declaration is mandatory.
+    // Dropping the throws clause gives:
+    //   error: unreported exception FileNotFoundException;
+    //          must be caught or declared to be thrown
     static void readFile() throws FileNotFoundException {
         new FileReader("abc.txt");
     }

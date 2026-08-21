@@ -14,6 +14,14 @@ public class GenericClasses {
         System.out.println(pair.getFirst() + " , " + pair.getSecond());
     }
 
+    /*
+     * Type erasure removes T at runtime, which rules all of these out:
+     *   T value = new T();          error: unexpected type
+     *   T[] array = new T[10];      error: generic array creation
+     *   static T shared;            error: non-static type variable T cannot be
+     *                                      referenced from a static context
+     *   List<int> primitives;       error: unexpected type
+     */
     static class Box<T> {
         private T value;
 

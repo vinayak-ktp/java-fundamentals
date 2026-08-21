@@ -12,8 +12,12 @@ public class SingleDimensionalArrays {
             System.out.println(rollNumber);
         }
 
-        // Array literal, size is inferred
+        // Array literal, size is inferred. The bare-braces form works only in a
+        // declaration; assigning one later needs the new int[]{...} form:
+        //   marks = {1, 2, 3};
+        //   error: illegal start of expression
         int[] marks = {12, 14, 56};
+        marks = new int[]{1, 2, 3};
         System.out.println("length = " + marks.length);
 
         // Elements are initialised to the type's default (0 here), unlike locals

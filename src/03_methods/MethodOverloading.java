@@ -9,7 +9,10 @@ public class MethodOverloading {
     }
 
     // Overloads must differ in the number, type or order of parameters.
-    // The return type alone is not part of the signature.
+    // The return type alone is not part of the signature, so these cannot coexist:
+    //   static int fun() { ... }
+    //   static void fun() { ... }
+    //   error: method fun() is already defined in class MethodOverloading
     static int sum(int a, int b) {
         return a + b;
     }

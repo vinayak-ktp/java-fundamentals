@@ -25,6 +25,8 @@ public class OverridingRules {
             return 10;
         }
 
+        // A child writing `void sealed() { }` gets:
+        //   error: sealed() in Child cannot override sealed() in Parent
         final void sealed() {
             System.out.println("Cannot be overridden");
         }

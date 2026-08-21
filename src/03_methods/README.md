@@ -64,8 +64,13 @@ Several methods may share a name if their **parameter lists** differ in:
 - the **types** — `sum(int, int)` versus `sum(double, double)`
 - the **order** of different types — `greet(String, int)` versus `greet(int, String)`
 
-Together those form the **signature**. The **return type is not part of it**, so two methods
-that differ only in what they return cannot coexist.
+Together those form the **signature**. The **return type is not part of it**, so these two
+cannot coexist:
+
+```java
+static int  fun() { ... }
+static void fun() { ... }   // compile error: fun() is already defined
+```
 
 Which overload runs is decided **at compile time** from the static types of the arguments —
 this is *static* or *compile-time* polymorphism, as opposed to overriding, which is resolved
@@ -169,6 +174,28 @@ Java cannot express that. If a method must hand back a new object, **return it**
 `CallByValue.java` also includes `Point(Point other)`, a constructor that clones an existing
 instance. That is the building block of the **defensive copy**, the technique that makes
 immutability actually hold; see `06_oop/ImmutableClass.java`.
+
+## Code that does not compile
+
+The counter-example lives as a comment in `MethodOverloading.java`, with the exact `javac`
+error. The reasoning is here.
+
+```java
+static int  fun() { return 1; }
+static void fun() { }
+// error: method fun() is already defined in class MethodOverloading
+```
+
+The **return type is not part of the signature**, so as far as the compiler is concerned these
+are the same method declared twice.
+
+The reason is that overload resolution happens from the *call site*, using only the arguments.
+In `fun();` — a call whose result is discarded — there is nothing to indicate which of the two
+was meant. Java resolves overloads by arguments alone, so a difference in return type gives it
+no information to work with.
+
+This is also why overriding is allowed to change the return type only *covariantly* (a subtype
+of the original): the signature stays the same, and the return type merely narrows.
 
 ## Running the examples
 

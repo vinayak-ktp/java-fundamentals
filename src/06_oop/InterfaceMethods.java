@@ -11,7 +11,11 @@ public class InterfaceMethods {
         Vehicle vehicle = new Car();
         vehicle.drive();       // inherited default method
 
-        Vehicle.brake();       // static methods are not inherited, call via the interface
+        // static interface methods are not inherited, so they are called on the interface.
+        // Through an instance or an implementing class:
+        //   vehicle.brake();
+        //   error: illegal static interface method call
+        Vehicle.brake();
 
         new Bike().drive();    // the default method overridden
     }

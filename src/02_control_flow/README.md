@@ -260,6 +260,36 @@ Labels are legitimately useful in search loops over a grid. They are also easy t
 a label is helping, that is often a hint the loop body wants to be its own method, where a
 plain `return` does the same job more clearly.
 
+## Code that does not compile
+
+Counter-examples live as comments in `SwitchStatements.java`, each with the exact `javac` error.
+The reasoning is here.
+
+```java
+long value = 5;
+switch (value) { case 1: break; }
+// error: selector type long is not allowed
+```
+
+`switch` compiles to a jump table or a binary search over the case labels, not to a chain of
+comparisons. That construction needs a small, dense, exactly-comparable set of integer keys —
+so `byte`, `short`, `char` and `int` are allowed, and `long` is not, despite being an integer
+type. `float` and `double` are excluded because equality on them is unreliable
+(`05_strings` and `01_basics` cover why), and `boolean` because two cases is what `if` is for.
+
+```java
+switch (i) {
+    case 1: break;
+    case 1: break;
+}
+// error: duplicate case label
+```
+
+Each label must map to exactly one branch for the jump table to be well-defined, so duplicates
+are rejected at compile time rather than resolved by some first-wins rule. Labels must also be
+compile-time constants — a `final` variable initialised with a literal works, a method call does
+not.
+
 ## Running the examples
 
 ```sh

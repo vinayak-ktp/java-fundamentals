@@ -120,10 +120,10 @@ This is the point people miss:
 
 ```java
 final List<String> names = new ArrayList<>();
-names.add("Aditya");        // fine — the list itself is mutable
+names.add("Aditya");        // fine — the list is mutable
+names = new ArrayList<>();  // compile error — the reference is not
 ```
 
-The variable can never be repointed, but the object it points at is free to change.
 Immutability needs more than `final`; see `06_oop/ImmutableClass.java`.
 
 ### `final` methods and classes
@@ -214,6 +214,53 @@ generally expected to recover from. The example catches it only to keep the demo
 This is also the shape of a real memory leak in Java: not a forgotten `free`, but a collection
 (a cache, a listener list, a `static` map) that keeps growing because something still references
 every entry.
+
+## Code that does not compile
+
+Counter-examples live as comments in the `.java` files, each with the exact `javac` error it
+produces. The reasoning is here.
+
+```java
+static void print() { System.out.println(name); }   // name is an instance field
+// error: non-static variable name cannot be referenced from a static context
+```
+
+A static method runs without any instance, so `name` has no object to belong to — there is
+nothing to read it *from*. The error is not a restriction so much as a missing operand: the
+compiler would have to invent an object to satisfy the reference. The reverse direction is
+always fine, since an instance method has both an object and access to the class.
+
+This is the same reasoning that makes `main` static, seen from the other side.
+
+```java
+final int x = 4;
+x = 5;
+// error: cannot assign a value to final variable x
+```
+
+`final` means assigned exactly once, and the compiler tracks every code path to enforce it. A
+blank final (`final int x;` then `x = 4;`) is legal precisely because the compiler can prove
+there is exactly one assignment on every path — so it rejects both a second assignment and a
+path that leaves it unassigned.
+
+What it does **not** freeze is the object behind a reference:
+
+```java
+final List<String> names = new ArrayList<>();
+names.add("Aditya");        // fine, the list is mutable
+names = new ArrayList<>();  // error: cannot assign a value to final variable names
+```
+
+```java
+class Sub extends Sealed { }
+// error: cannot inherit from final Sealed
+```
+
+A `final` class closes the type to extension entirely. `String`, `Integer` and the other
+wrappers are final for exactly this reason: subclassing them could override `equals`,
+`hashCode` or a getter, and every guarantee that makes them safe to pool, cache and share
+between threads would evaporate. `06_oop/ImmutableClass.java` uses the same technique for the
+same reason.
 
 ## Running the examples
 

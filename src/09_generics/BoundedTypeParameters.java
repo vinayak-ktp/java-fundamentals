@@ -10,8 +10,15 @@ public class BoundedTypeParameters {
         NumberBox<Integer> intBox = new NumberBox<>(5);
         intBox.printAsDouble();   // doubleValue() exists because of the bound
 
+        //   NumberBox<String> box = new NumberBox<>("x");
+        //   error: type argument String is not within bounds of type-variable T
+
         MultiBoundBox<Fish> fishBox = new MultiBoundBox<>(new Fish());
         fishBox.describe();
+
+        //   MultiBoundBox<Dog> box = new MultiBoundBox<>(new Dog());
+        //   error: type argument Dog is not within bounds of type-variable T
+        //          (Dog is an Animal, but does not implement Swimmable)
     }
 
     static class NumberBox<T extends Number> {

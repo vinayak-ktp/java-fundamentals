@@ -22,6 +22,7 @@ public class Inheritance {
 
         Student student = new Student();
         student.markAttendance();
+        // student.attendLab();  // not visible: the parent knows nothing of the child
     }
 
     static class Student {

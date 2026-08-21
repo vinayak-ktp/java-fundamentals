@@ -11,6 +11,9 @@ public class LocalAndAnonymousClasses {
      * after initialisation - because it captures a copy of the value.
      */
     static void localClass() {
+        // Reassigning `captured` after this line breaks the capture below:
+        //   error: local variables referenced from an inner class
+        //          must be final or effectively final
         int captured = 5;
 
         class Greeter {

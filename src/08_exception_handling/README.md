@@ -219,6 +219,50 @@ leans unchecked, since `throws` clauses propagate virally through every layer.
 - Preserve the cause when wrapping.
 - Never return or throw from `finally`.
 
+## Code that does not compile
+
+Counter-examples live as comments in the `.java` files, each with the exact `javac` error it
+produces. The reasoning is here.
+
+```java
+try { ... }
+catch (Exception e) { }
+catch (ArithmeticException e) { }
+// error: exception ArithmeticException has already been caught
+```
+
+Catch blocks are tested in order, so `catch (Exception e)` matches everything and the block
+below it can never run. Java does not merely warn about the dead code — it rejects the program.
+Order subclasses before superclasses.
+
+This is one of the few places the compiler catches a *logic* mistake rather than a type
+mistake, and it is worth noticing why it can: reachability here is decidable purely from the
+type hierarchy.
+
+The same rule explains why multi-catch types cannot be related — `catch (IOException |
+FileNotFoundException e)` is rejected, because the second is already covered by the first.
+
+```java
+static void readFile() {
+    new FileReader("abc.txt");
+}
+// error: unreported exception FileNotFoundException;
+//        must be caught or declared to be thrown
+```
+
+This is the entire meaning of "checked": the compiler verifies that every checked exception is
+either handled locally or declared, all the way up the call chain. There is no way to ignore one
+silently.
+
+An unchecked exception needs neither. That difference is the *only* mechanical distinction
+between the two — `RuntimeException` and `IOException` are otherwise ordinary classes with the
+same API. Everything else about the split (bug versus recoverable condition) is convention about
+when to use which.
+
+Note that overriding narrows this rather than widening it: an override may declare fewer or
+narrower checked exceptions than the method it overrides, never more. Otherwise a caller holding
+a supertype reference could receive an exception the compiler told it was impossible.
+
 ## Running the examples
 
 ```sh

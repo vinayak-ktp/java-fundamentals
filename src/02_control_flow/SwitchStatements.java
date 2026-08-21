@@ -5,8 +5,16 @@ public class SwitchStatements {
         stringSwitch("pending");
     }
 
-    // The switch expression must be byte, short, int, char, an enum,
-    // a String (Java 7+) or their wrapper types. Duplicate cases are illegal.
+    /*
+     * The switch expression must be byte, short, int, char, an enum,
+     * a String (Java 7+) or their wrapper types:
+     *   switch (someLong) { ... }
+     *   error: selector type long is not allowed
+     *
+     * Case labels must be compile-time constants, and must be unique:
+     *   case 1: ... case 1: ...
+     *   error: duplicate case label
+     */
     static void classicSwitch(int i) {
         switch (i) {
             case 1:

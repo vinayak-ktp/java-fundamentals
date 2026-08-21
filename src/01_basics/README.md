@@ -287,6 +287,39 @@ Details that matter:
   `nextLine()` returns an empty string — discard that leftover newline with a bare
   `nextLine()` call.
 
+## Code that does not compile
+
+Counter-examples live as comments in the `.java` files, each with the exact `javac` error it
+produces. The reasoning is here.
+
+```java
+boolean flag = false;
+int i = flag;
+// error: incompatible types: boolean cannot be converted to int
+```
+
+`boolean` is isolated from every other type, in both directions. There is no "zero is false"
+rule, no `(int)` cast that works, and no implicit conversion. This is a deliberate design
+choice: it makes `if (x = 5)` — assignment where comparison was meant — a compile error rather
+than a silently truthy expression, which is a whole category of C bug that cannot happen in
+Java.
+
+```java
+byte b = 50;
+b = b * 2;
+// error: incompatible types: possible lossy conversion from int to byte
+```
+
+Every arithmetic operation on types narrower than `int` promotes both operands to `int`, so
+`b * 2` is an `int` expression. Assigning an `int` back into a `byte` may lose data, so the
+compiler demands an explicit cast as your acknowledgement. Note the word **possible** — the
+compiler is reasoning about types, not values, so it rejects this even though `100` fits in a
+`byte` perfectly well.
+
+The quirk is that `b *= 2` compiles instead. The compound assignment operators have an implicit
+narrowing cast built into the language specification, so they do the cast silently — and
+silently overflow when the result does not fit.
+
 ## Running the examples
 
 ```sh

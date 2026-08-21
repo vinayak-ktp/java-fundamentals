@@ -33,11 +33,16 @@ public class TypeCasting {
         System.out.println(i);
     }
 
-    // boolean has no conversion to or from any other type.
+    // boolean has no conversion to or from any other type, in either direction:
+    //   boolean flag = false;
+    //   int i = flag;
+    //   error: incompatible types: boolean cannot be converted to int
 
     static void compoundAssignmentQuirk() {
         byte b = 50;
         // b * 2 is promoted to int, so the plain assignment needs a cast back...
+        //   b = b * 2;
+        //   error: incompatible types: possible lossy conversion from int to byte
         b = (byte) (b * 2);
         System.out.println(b);
 

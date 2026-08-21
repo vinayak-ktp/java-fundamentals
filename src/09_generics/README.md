@@ -35,10 +35,10 @@ Generics move that error to compile time:
 
 ```java
 Box<Integer> box = new Box<>(10);
-Integer value = box.getValue();
+String s = box.getValue();   // will not compile — and that is the point
 ```
 
-The casts disappear, and a wrong one is caught while you type it rather than in production.
+The casts disappear, and the mistake is caught while you type it rather than in production.
 
 ### Upcasting and downcasting
 
@@ -75,9 +75,15 @@ The diamond `<>` (Java 7+) tells the compiler to infer the arguments from the ta
 Generics are implemented by **erasure**. The compiler checks the types, then removes them —
 `Box<Integer>` and `Box<String>` compile to the *same* class, with `T` replaced by `Object`
 (or by its bound). This kept generics backward-compatible with pre-Java-5 bytecode, at a price:
-a type parameter cannot be instantiated, used to create an array, tested with `instanceof`,
-declared `static`, caught, or given a primitive type argument — none of that information
-survives to runtime, so use `List<Integer>` rather than a primitive.
+
+| Illegal | Reason |
+|---|---|
+| `new T()` | the constructor is not known at runtime |
+| `new T[10]` | the array's runtime element type is not known |
+| `x instanceof List<String>` | the type argument is gone at runtime |
+| `static T field;` | a static member is per-class, and `T` is per-instance |
+| `catch (MyException<T> e)` | the runtime cannot distinguish the types |
+| primitive type arguments — `List<int>` | erasure needs a reference type; use `List<Integer>` |
 
 Erasure is also why two overloads cannot differ only in a type argument: `f(List<String>)` and
 `f(List<Integer>)` erase to the same signature.
@@ -136,9 +142,15 @@ Animal[] animals = dogs;        // allowed
 animals[1] = new Animal();      // compiles → ArrayStoreException at runtime
 ```
 
-**Generics are invariant:** `List<Dog>` is *not* a `List<Animal>`, and the assignment is
-rejected. It has to be: if a `List<Dog>` could be treated as a `List<Animal>`, anything holding
-that wider reference could add a `Cat`, and the next `Dog` read out of the list would explode.
+**Generics are invariant:** `List<Dog>` is *not* a `List<Animal>`, and the assignment simply
+does not compile. Consider why it must not:
+
+```java
+List<Dog> dogs = new ArrayList<>();
+List<Animal> animals = dogs;    // if this were legal...
+animals.add(new Cat());         // ...a Cat would be in a List<Dog>
+Dog d = dogs.get(0);            // ...and this would explode
+```
 
 Because erasure removes the type argument, the JVM could not perform the runtime check arrays
 get. So generics prevent the situation at compile time instead. Invariance is not a limitation
@@ -198,6 +210,82 @@ is the canonical illustration — both halves in one signature.
 
 Practical rule: use a wildcard for a method parameter when the body does not need to name the
 type; use `<T>` when it does, or when two parameters and/or the return value must agree.
+
+## Code that does not compile
+
+This is the module where the counter-examples carry the most weight — the rules are defined as
+much by what generics *refuse* as by what they allow. Each one lives as a comment in the
+`.java` files with the exact `javac` error; the reasoning is here.
+
+```java
+List<Dog> dogs = new ArrayList<>();
+List<Animal> animals = dogs;
+// error: incompatible types: List<Dog> cannot be converted to List<Animal>
+```
+
+Invariance, and it is a feature. If the assignment were allowed, `animals.add(new Cat())` would
+put a `Cat` into a `List<Dog>`, and the next `dogs.get(0)` would fail. Arrays *do* allow it and
+pay for it with a runtime check on every store (`ArrayStoreException`); generics cannot even do
+that, because erasure removes the element type before the program runs. So the check has to
+happen at compile time, which means rejecting the assignment outright.
+
+```java
+static void readOnly(List<? extends Animal> values) {
+    values.add(new Dog());
+}
+// error: incompatible types: Dog cannot be converted to CAP#1
+```
+
+`CAP#1` is the compiler's name for the **captured** unknown type — "whatever specific subtype of
+`Animal` this list actually holds". Since it could be `List<Cat>`, no particular element is
+known to fit, and even `Dog` is rejected. Hence: `? extends` is safe to read from and closed to
+writes. (`null` is the one value that can be added, being a member of every reference type.)
+
+```java
+static void writeOnly(List<? super Animal> values) {
+    Animal a = values.get(0);
+}
+// error: incompatible types: CAP#1 cannot be converted to Animal
+```
+
+The mirror image. The list holds `Animal` or some supertype, so any `Animal` can safely be
+*added* — but a read might return an `Object`, so nothing narrower than `Object` is guaranteed
+on the way out. Together these two errors *are* PECS: Producer Extends, Consumer Super.
+
+```java
+NumberBox<String> box = new NumberBox<>("x");
+// error: type argument String is not within bounds of type-variable T
+
+MultiBoundBox<Dog> box = new MultiBoundBox<>(new Dog());
+// error: type argument Dog is not within bounds of type-variable T
+```
+
+The bound is a contract in both directions: the class gets to call `Number`'s methods, and in
+exchange the caller may only supply a `Number`. The second case shows a multiple bound
+(`<T extends Animal & Swimmable>`) rejecting a type that satisfies one half — `Dog` is an
+`Animal` but does not implement `Swimmable`.
+
+### The erasure family
+
+All four of these fail for the same underlying reason — `T` does not exist at runtime:
+
+```java
+T value = new T();          // error: unexpected type
+T[] array = new T[10];      // error: generic array creation
+static T shared;            // error: non-static type variable T cannot be
+                            //        referenced from a static context
+List<int> primitives;       // error: unexpected type
+```
+
+- `new T()` — the constructor to call is not known; there is no runtime `T` to ask.
+- `new T[10]` — an array carries its element type at runtime for the store check, and `T` cannot
+  supply one. The workaround is `(T[]) new Object[10]` with an unchecked warning, which is
+  exactly what `ArrayList` does internally.
+- `static T` — a static member exists once per class, while `T` is chosen per instance. There is
+  no single type it could have.
+- `List<int>` — erasure replaces `T` with `Object` (or its bound), and a primitive is not a
+  reference. Use `List<Integer>` and let autoboxing handle it, or a primitive-specialised stream
+  when the boxing matters.
 
 ## Running the examples
 

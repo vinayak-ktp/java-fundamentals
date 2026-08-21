@@ -56,12 +56,12 @@ Code comments are **sparse and specific** — a quirk, a subtlety, or the concep
 demonstrated. Never narration of the next line. All depth belongs in the module `README.md`.
 Adding paragraph-length explanation to a `.java` file works against this deliberately.
 
-Each module README follows the same shape: a file→concept table, concept sections, then
-**Running the examples**.
+Each module README follows the same shape: a file→concept table, concept sections, an optional
+**Code that does not compile** section, then **Running the examples**.
 
 ## Code that is wrong on purpose
 
-Broken code is a teaching device here and must not be deleted or "corrected". Two tiers:
+Broken code is a teaching device here and must not be deleted or "corrected". Three tiers:
 
 1. **Compiles and fails at runtime** — lives in the examples, wrapped in a `try`/`catch` that
    prints the lesson (`ArrayStoreException`, `ConcurrentModificationException`, NPE from unboxing
@@ -69,6 +69,13 @@ Broken code is a teaching device here and must not be deleted or "corrected". Tw
 2. **Compiles, runs, silently wrong** — also live code: `Synchronization.UnsafeCounter` (lost
    increments), `ImmutableClass.LeakyStudent` (state escapes). `ProducerConsumer.BusyWaitBox` is
    written out but deliberately never called, because it deadlocks.
+3. **Cannot compile** — a comment beside the working version, holding the snippet plus the exact
+   `javac` error, with the reasoning in that module's README.
+
+**When adding a tier-3 case, compile a throwaway snippet and copy the real `javac` output.** Every
+quoted error message in this repo was verified that way, and several are counter-intuitive (the
+array-literal case is only `illegal start of expression`; wildcard errors mention `CAP#1`).
+
 ## Keeping docs in sync
 
 `README.md` at the root indexes the modules and documents these conventions. A new example needs

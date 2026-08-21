@@ -6,6 +6,9 @@
  */
 public class AbstractClasses {
     public static void main(String[] args) {
+        // Only a concrete subclass can be instantiated:
+        //   Animal a = new Animal("Bruno");
+        //   error: Animal is abstract; cannot be instantiated
         Animal animal = new Dog("Bruno");
         animal.makeSound();
         animal.sleep();

@@ -17,6 +17,10 @@ public class Wildcards {
         dogs.add(new Dog());
         dogs.add(new Dog());
 
+        // Generics are invariant, which is why the wildcards below exist:
+        //   List<Animal> animals = dogs;
+        //   error: incompatible types: List<Dog> cannot be converted to List<Animal>
+
         printSize(dogs);
         readOnly(dogs);
 
@@ -37,6 +41,10 @@ public class Wildcards {
         for (Animal animal : values) {
             animal.eat();
         }
+
+        //   values.add(new Dog());
+        //   error: incompatible types: Dog cannot be converted to CAP#1
+        //          (CAP#1 is the unknown captured type - it could be Cat)
     }
 
     // Consumer: the list holds Animal or something above it,
@@ -46,6 +54,9 @@ public class Wildcards {
         values.add(new Dog());
         values.add(new Labrador());
 
+        // Reading back gives Object only, so the cast is unavoidable:
+        //   Animal a = values.get(0);
+        //   error: incompatible types: CAP#1 cannot be converted to Animal
         for (Object obj : values) {
             ((Animal) obj).eat();
         }

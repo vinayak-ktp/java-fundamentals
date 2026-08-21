@@ -6,6 +6,10 @@
  */
 public class LambdaExpressions {
     public static void main(String[] args) {
+        // A lambda has no type of its own - it takes the type of what it is
+        // assigned to, so there must be something to infer from:
+        //   var add = (a, b) -> a + b;
+        //   error: cannot infer type for local variable add
         Calculator add = (a, b) -> a + b;
         Calculator multiply = (a, b) -> a * b;
 
@@ -29,6 +33,9 @@ public class LambdaExpressions {
         return calculator.calculate(a, b);
     }
 
+    // Adding a second abstract method here is rejected at the interface itself,
+    // rather than at every lambda that used it:
+    //   error: Unexpected @FunctionalInterface annotation
     @FunctionalInterface
     interface Calculator {
         int calculate(int a, int b);

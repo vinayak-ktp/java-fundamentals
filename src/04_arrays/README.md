@@ -159,6 +159,28 @@ Not used in these two examples, but this is where the useful operations live:
 - `Arrays.asList(arr)` — a fixed-size `List` **view** backed by the array
 - `Arrays.stream(arr)` — the bridge into `12_streams`
 
+## Code that does not compile
+
+The counter-example lives as a comment in `SingleDimensionalArrays.java`, with the exact `javac`
+error. The reasoning is here.
+
+```java
+int[] marks = {12, 14, 56};   // fine
+marks = {1, 2, 3};            // not fine
+// error: illegal start of expression
+```
+
+The bare-braces form is not an expression — it is a piece of **declaration syntax**, valid only
+where the compiler already knows the element type from the variable being declared. On its own,
+`{1, 2, 3}` has no type at all, so it cannot appear on the right of an assignment or be passed
+as an argument.
+
+The fix is `new int[]{1, 2, 3}`, which states the type and therefore *is* an expression. It works
+anywhere: reassignment, method arguments, `return` statements.
+
+The error message is unhelpfully generic because the parser fails before it can work out what you
+were attempting — it sees `{` where a value belongs and gives up at the syntax level.
+
 ## Running the examples
 
 ```sh

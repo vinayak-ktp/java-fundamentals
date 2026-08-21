@@ -11,6 +11,8 @@ public class ConstructorChaining {
         int rollNumber;
         String college;
 
+        // this(...) must be the FIRST statement — a line above it gives:
+        //   error: call to this must be first statement in constructor
         Student() {
             this("Unknown");
             System.out.println("first constructor");

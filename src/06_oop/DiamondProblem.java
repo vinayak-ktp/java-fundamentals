@@ -5,7 +5,7 @@
  *     / \
  *    B   C      both override fun()
  *     \ /
- *      D        must override fun() itself
+ *      D        must override fun() itself, or it will not compile
  *
  * Resolution priority when a class and an interface both provide a method:
  *   1. the class's own method
@@ -37,6 +37,9 @@ public class DiamondProblem {
         }
     }
 
+    // Without the override below:
+    //   error: types B and C are incompatible;
+    //          class D inherits unrelated defaults for fun() from types B and C
     static class D implements B, C {
         @Override
         public void fun() {

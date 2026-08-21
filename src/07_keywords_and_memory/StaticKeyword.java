@@ -18,6 +18,9 @@ public class StaticKeyword {
         System.out.println("Objects created: " + Student.count);
     }
 
+    // A static method has no instance, so it cannot touch instance state:
+    //   static void print() { System.out.println(name); }
+    //   error: non-static variable name cannot be referenced from a static context
     static class Student {
         String name;
         int age;

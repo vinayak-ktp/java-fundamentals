@@ -35,7 +35,10 @@ public class NestedTryAndMultiCatch {
 
     /*
      * Catch blocks are checked top to bottom, so subclasses must come before
-     * their superclass - a catch(Exception) first would make the rest dead code.
+     * their superclass. Putting catch(Exception) first is not merely dead code,
+     * it is rejected outright:
+     *   catch (Exception e) { } catch (ArithmeticException e) { }
+     *   error: exception ArithmeticException has already been caught
      */
     static void multiCatch() {
         try {

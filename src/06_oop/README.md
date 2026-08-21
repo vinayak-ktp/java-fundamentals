@@ -253,7 +253,7 @@ Two interfaces can both supply a `default` method with the same signature:
    / \
   B   C     both default fun()
    \ /
-    D       must override fun() itself
+    D       must override fun(), or it will not compile
 ```
 
 Java refuses to guess. `D` must override, and may delegate explicitly with `B.super.fun()`.
@@ -493,6 +493,91 @@ is why `college.Teacher` uses `Student` directly.
 
 Conventions: reverse-domain names (`com.example.project`), all lowercase, and the directory
 structure must mirror the package name.
+
+## Code that does not compile
+
+Counter-examples live as comments in the `.java` files, each with the exact `javac` error it
+produces. The reasoning is here.
+
+```java
+Animal a = new Animal("Bruno");
+// error: Animal is abstract; cannot be instantiated
+```
+
+An abstract class may have unimplemented methods, so an instance of it could receive a call with
+no body to run. The class exists to be extended; only a concrete subclass can be instantiated.
+An anonymous subclass — `new Animal("Bruno") { void makeSound() { ... } }` — is legal, because
+that *is* a concrete subclass.
+
+```java
+class Child extends Parent {
+    void sealed() { }
+}
+// error: sealed() in Child cannot override sealed() in Parent
+//        overridden method is final
+```
+
+`final` on a method is a promise that the implementation is the only one. Superclasses rely on
+that promise when their own correctness depends on the method's behaviour — a template method,
+or anything a constructor calls. `private` and `static` methods cannot be overridden either, but
+for different reasons: a `private` method is invisible to the child, so a same-named method is
+simply unrelated; a `static` method belongs to the class, so a child's version **hides** rather
+than overrides it, and hiding is resolved by reference type.
+
+```java
+Vehicle vehicle = new Car();
+vehicle.brake();
+// error: illegal static interface method call
+```
+
+`static` interface methods are deliberately **not inherited**, unlike `static` class methods.
+When Java 8 added them, inheriting them would have meant a class implementing two interfaces
+could inherit two conflicting statics — with no override mechanism to resolve it, since statics
+are not polymorphic. Requiring `Vehicle.brake()` removes the ambiguity entirely.
+
+```java
+Student() {
+    System.out.println("before");
+    this("Unknown");
+}
+// error: call to this must be first statement in constructor
+```
+
+The same rule applies to `super(...)`. An object must be fully initialised bottom-up before
+anything observes it, so the parent's constructor — or the sibling constructor that eventually
+calls it — has to run before any other statement. Allowing a statement first would let it read
+fields that are still at their type defaults. This is also why exactly one of `this(...)` or
+`super(...)` can appear, and why the compiler inserts `super()` when you write neither.
+
+```java
+int captured = 5;
+captured++;
+class Local { void print() { System.out.println(captured); } }
+// error: local variables referenced from an inner class
+//        must be final or effectively final
+```
+
+A local lives on the stack and dies when the method returns; the class instance lives on the
+heap and may outlive it. So the captured value is **copied** into the instance. If the local
+could still change afterwards, the copy and the original would silently disagree — and there
+would be no way to say which one `captured` means. Java forbids the situation instead of
+picking. The same rule applies to lambdas and anonymous classes. (The workaround, when you
+genuinely need a mutable capture, is a one-element array or an `AtomicInteger` — the *reference*
+stays final while its contents change.)
+
+```java
+interface B extends A { default void fun() { ... } }
+interface C extends A { default void fun() { ... } }
+class D implements B, C { }
+// error: types B and C are incompatible;
+//        class D inherits unrelated defaults for fun() from types B and C
+```
+
+The diamond problem, and Java's answer is to refuse to guess. Neither `B` nor `C` is more
+specific than the other, so there is no principled winner. `D` must override `fun()`, and may
+delegate explicitly with `B.super.fun()`. Contrast this with a class-versus-interface conflict,
+which *does* have a rule — the class wins — because a concrete implementation is always more
+specific than a default.
 
 ## Running the examples
 

@@ -69,6 +69,11 @@ Conventions used throughout:
 - **Every file has a `main`** and runs on its own.
 - **Comments are sparse and specific** — they explain a quirk, a subtlety or the concept being
   demonstrated, never what the next line obviously does. The depth lives in the module READMEs.
+- **Code that is wrong on purpose is kept, not deleted.** Failures that compile and run sit in
+  the examples themselves, wrapped in a `try`/`catch` that names the lesson. Code that cannot
+  compile sits beside the working version as a comment, with the exact `javac` error it produces
+  — and a **Code that does not compile** section in that module's README explains why. Every
+  quoted error message was taken from real compiler output.
 
 ## Running the examples
 

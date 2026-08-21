@@ -9,7 +9,9 @@
  */
 public class FinalKeyword {
     public static void main(String[] args) {
-        // A blank final local: declared now, assigned once later
+        // A blank final local: declared now, assigned once later.
+        // A second assignment gives:
+        //   error: cannot assign a value to final variable x
         final int x;
         x = 4;
         System.out.println(x);
@@ -28,7 +30,9 @@ public class FinalKeyword {
         }
     }
 
-    // A final class cannot be subclassed - String is the best known example
+    // A final class cannot be subclassed - String is the best known example:
+    //   class Sub extends Sealed { }
+    //   error: cannot inherit from final Sealed
     static final class Sealed {
         final void cannotOverride() {
             System.out.println("final method");
