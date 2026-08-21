@@ -5,3 +5,6 @@ out/
 
 .claude/*local*
 .idea/
+.vscode/
+
+.DS_Store

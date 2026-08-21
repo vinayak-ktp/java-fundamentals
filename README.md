@@ -4,7 +4,7 @@ A clean, semantically organised reference for Core Java — every concept from a
 video course, reorganised by topic instead of by lecture number, refactored to idiomatic Java,
 and documented module by module.
 
-Each of the 13 modules holds runnable single-topic examples plus a `README.md` that explains the
+Each of the 13 modules holds runnable single-topic examples plus a `readme.md` that explains the
 concepts in depth: not just the syntax, but the mechanism behind it and the traps that come with
 it.
 
@@ -12,19 +12,19 @@ it.
 
 | # | Module | What it covers |
 |---|---|---|
-| 01 | [Basics](src/01_basics/README.md) | Entry point, primitives, literals, floating-point precision, casting, promotion, operators, console input |
-| 02 | [Control Flow](src/02_control_flow/README.md) | `if` forms, `switch`, the four loops, `break`/`continue`/labels |
-| 03 | [Methods](src/03_methods/README.md) | Declaration, the call stack, overloading and resolution, scope, call-by-value |
-| 04 | [Arrays](src/04_arrays/README.md) | Arrays as objects, indexing, jagged arrays, memory layout, `java.util.Arrays` |
-| 05 | [Strings](src/05_strings/README.md) | Immutability, the string pool, the full API, `StringBuilder` and capacity |
-| 06 | [OOP](src/06_oop/README.md) | Classes, constructors, encapsulation, inheritance, polymorphism, interfaces, `Object`, enums, nested classes, immutability, wrappers, packages |
-| 07 | [Keywords and Memory](src/07_keywords_and_memory/README.md) | `static`, initialisation order, `final`, command-line arguments, garbage collection |
-| 08 | [Exception Handling](src/08_exception_handling/README.md) | The hierarchy, checked vs. unchecked, `finally`, propagation, custom exceptions |
-| 09 | [Generics](src/09_generics/README.md) | Type parameters, erasure, bounds, covariance, wildcards and PECS |
-| 10 | [Collections](src/10_collections/README.md) | `List`, `Set`, `Map`, `Queue`, iteration, navigation, `Comparable` and `Comparator` |
-| 11 | [Functional](src/11_functional/README.md) | Functional interfaces, lambdas, composition, method references |
-| 12 | [Streams](src/12_streams/README.md) | Pipelines, intermediate and terminal operations, collectors, parallel streams, `Optional` |
-| 13 | [Multithreading](src/13_multithreading/README.md) | Threads, synchronisation, `volatile`, `wait`/`notify`, locks, atomics, executors |
+| 01 | [Basics](src/01_basics/readme.md) | Entry point, primitives, literals, floating-point precision, casting, promotion, operators, console input |
+| 02 | [Control Flow](src/02_control_flow/readme.md) | `if` forms, `switch`, the four loops, `break`/`continue`/labels |
+| 03 | [Methods](src/03_methods/readme.md) | Declaration, the call stack, overloading and resolution, scope, call-by-value |
+| 04 | [Arrays](src/04_arrays/readme.md) | Arrays as objects, indexing, jagged arrays, memory layout, `java.util.Arrays` |
+| 05 | [Strings](src/05_strings/readme.md) | Immutability, the string pool, the full API, `StringBuilder` and capacity |
+| 06 | [OOP](src/06_oop/readme.md) | Classes, constructors, encapsulation, inheritance, polymorphism, interfaces, `Object`, enums, nested classes, immutability, wrappers, packages |
+| 07 | [Keywords and Memory](src/07_keywords_and_memory/readme.md) | `static`, initialisation order, `final`, command-line arguments, garbage collection |
+| 08 | [Exception Handling](src/08_exception_handling/readme.md) | The hierarchy, checked vs. unchecked, `finally`, propagation, custom exceptions |
+| 09 | [Generics](src/09_generics/readme.md) | Type parameters, erasure, bounds, covariance, wildcards and PECS |
+| 10 | [Collections](src/10_collections/readme.md) | `List`, `Set`, `Map`, `Queue`, iteration, navigation, `Comparable` and `Comparator` |
+| 11 | [Functional](src/11_functional/readme.md) | Functional interfaces, lambdas, composition, method references |
+| 12 | [Streams](src/12_streams/readme.md) | Pipelines, intermediate and terminal operations, collectors, parallel streams, `Optional` |
+| 13 | [Multithreading](src/13_multithreading/readme.md) | Threads, synchronisation, `volatile`, `wait`/`notify`, locks, atomics, executors |
 
 ## Suggested path
 
@@ -46,15 +46,14 @@ The numbering is the intended reading order, and later modules build on earlier 
 
 ```
 core-java/
-├── README.md              this file
-├── sketch.txt             the original target structure this repo was built from
-└── src/
+├── README.md               this file
+└── src/                    source files for all modules
     ├── 01_basics/
-    │   ├── README.md
+    │   ├── readme.md
     │   └── *.java
     ├── ...
     └── 13_multithreading/
-        ├── README.md
+        ├── readme.md
         └── *.java
 ```
 

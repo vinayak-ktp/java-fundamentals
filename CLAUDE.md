@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this repository is
 
 A **learning reference**, not an application. 13 numbered modules under `src/`, each holding
-standalone single-topic Java examples plus a `README.md` that explains those concepts in depth.
+standalone single-topic Java examples plus a `readme.md` that explains those concepts in depth.
 
 There is no build tool, no dependency manager, no test suite and no `main` entry point for the
 project as a whole — every `.java` file is independently compilable and runnable. Verified against
@@ -53,7 +53,7 @@ These are deliberate and load-bearing; do not "fix" them.
 ## Comment and documentation split
 
 Code comments are **sparse and specific** — a quirk, a subtlety, or the concept being
-demonstrated. Never narration of the next line. All depth belongs in the module `README.md`.
+demonstrated. Never narration of the next line. All depth belongs in the module `readme.md`.
 Adding paragraph-length explanation to a `.java` file works against this deliberately.
 
 Each module README follows the same shape: a file→concept table, concept sections, an optional
